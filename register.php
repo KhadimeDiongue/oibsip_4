@@ -1,26 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Register</h1>
-        <form action="../php/register.php" method="post" class="register-form">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="email" id="username" name="username" placeholder="Enter your email address" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password" required>
-            </div>
-            <button type="submit">Register</button>
-        </form>
-        <a href="../index.php" class="login-link">Back to login</a>
-    </div>
-</body>
-</html>
+<?php
+  $username = isset($_POST['username']) ? $_POST['username'] : null;
+  $password = isset($_POST['password']) ? $_POST['password'] : null;
+
+  if($username != null && $password != null)
+    {
+      $file_data;
+      $file_path = "../data.json";
+
+      //read contents of file and save them in an associative array
+      if(file_exists($file_path))
+        $file_data = json_decode(file_get_contents($file_path), true);
+      
+      //append newly added username and password to existing data
+      $file_data[] = array(
+        $username => $password
+      );
+
+      //open file
+      $file = fopen('../data.json', 'w');
+ 
+      //write the data to the file
+      if($file)
+      {
+        fwrite($file, json_encode($file_data));
+        Header("Location: ../index.php");
+      }
+      
+      fclose($file);
+
+      
+    }
+    
+?>
